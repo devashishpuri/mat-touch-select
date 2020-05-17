@@ -17,7 +17,15 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "mat-touch-select": [
+        "dist/mat-touch-select"
+      ],
+      "mat-touch-select/*": [
+        "dist/mat-touch-select/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
