@@ -85,7 +85,9 @@ export class MatTouchSelectComponent implements MatFormFieldControl<string>, Aft
     public dialog: MatDialog,
     public overlayContainer: OverlayContainer
   ) {
-    this.ngControl.valueAccessor = this;
+    if (this.ngControl) {
+      this.ngControl.valueAccessor = this;
+    }
   }
 
   writeValue(val: string): void {
