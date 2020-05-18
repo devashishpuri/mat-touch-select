@@ -1,6 +1,24 @@
 {
   "name": "mat-touch-select",
   "version": "0.0.1",
+  "license": "MIT",
+  "homepage": "https://github.com/devashishpuri/mat-touch-select",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devashishpuri/mat-touch-select"
+  },
+  "private": false,
+  "keywords": [
+    "angular",
+    "material",
+    "touchUi",
+    "mat-touch",
+    "mat-touch-select",
+    "mat-select",
+    "mobile-select",
+    "dropdown",
+    "mobile"
+  ],
   "peerDependencies": {
     "@angular/common": "^8.1.3",
     "@angular/core": "^8.1.3",
