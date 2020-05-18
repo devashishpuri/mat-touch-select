@@ -1,0 +1,20 @@
+.demo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 420px;
+    margin: auto;
+    padding: 16px;
+
+    & > div {
+        padding: 16px 0;
+    }
+
+    .btn-control {
+        display: inline-block;
+
+        &:not(:last-of-type) {
+            margin-right: 16px;
+        }
+    }
+}

@@ -1,1 +1,8 @@
-<p>mat-touch-options works!</p>
+<div class="mat-touch-options">
+    <h4 class="label">{{ data.label }}</h4>
+    <mat-radio-group [value]='data.selected' (change)='valSelect($event)'>
+        <mat-radio-button class="touch-option" *ngFor='let option of data.options' [value]='option'>
+            {{ option }}
+        </mat-radio-button>
+    </mat-radio-group>
+</div>

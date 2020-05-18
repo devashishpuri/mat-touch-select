@@ -3,8 +3,7 @@ import { MatTouchSelectComponent } from './mat-touch-select.component';
 import { MatSelectModule, MatDialogModule, MatRadioModule } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { MatTouchOptionsComponent } from './mat-touch-options/mat-touch-options.component';
-
-
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [MatTouchSelectComponent, MatTouchOptionsComponent],

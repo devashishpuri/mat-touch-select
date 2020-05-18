@@ -1,11 +1,30 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="display: flex;flex-direction: column;justify-content:center;max-width: 320px; margin:auto">
+<div class="demo">
   <h2>
     Mat Touch Select Demo
   </h2>
+  <div>
+
+    <div class="btn-control">
+      <button mat-flat-button (click)='touchToggle = !touchToggle' color='primary'>
+        Toggle Touch: {{ touchToggle }}
+      </button>
+    </div>
+
+    <div class="btn-control">
+      <button mat-flat-button (click)='control.reset()' color='primary'>
+        Reset Value
+      </button>
+    </div>
+
+  </div>
 
   <mat-form-field appearance="outline">
-    <mat-label>Random Options</mat-label>
-    <mat-touch-select [options]='options' [touchUi]='true'></mat-touch-select>
+    <mat-label>App timer</mat-label>
+    
+    <!-- Our Touch Optimised Form Control -->
+    <mat-touch-select [options]='options' [formControl]='control' [touchUi]='touchToggle' placeholder="App timer">
+    </mat-touch-select>
+
   </mat-form-field>
 </div>

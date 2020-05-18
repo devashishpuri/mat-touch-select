@@ -1,7 +1,6 @@
-<mat-select [placeholder]='placeholder' (selectionChange)='setMatVal($event)'>
-    <ng-container *ngIf='!touchUi'>
-        <mat-option *ngFor="let option of options" [value]="option">
-            {{ option }}
-        </mat-option>
-    </ng-container>
+<mat-select #select [placeholder]='placeholder' (selectionChange)='setMatVal($event)'
+    [value]='value'>
+    <mat-option *ngFor="let option of options" [value]="option">
+        {{ option }}
+    </mat-option>
 </mat-select>

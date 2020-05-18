@@ -1,0 +1,19 @@
+.mat-touch-options {
+    min-width: 256px;
+    .label {
+        margin: 0;
+        text-align: center;
+        opacity: 0.76;
+        font-size: large;
+        font-weight: 500;
+    }
+
+    .touch-option {
+        display: block;
+        margin: 24px 0;
+        
+        &:last-of-type {
+            margin-bottom: 8px;
+        }
+    }
+}

@@ -1,8 +1,9 @@
-import { Component, Input, HostBinding, Optional, Self } from '@angular/core';
-import { MatFormFieldControl, MatSelectChange, MatDialog } from '@angular/material';
-import { Observable, Subject } from 'rxjs';
-import { NgControl } from '@angular/forms';
-import { MatTouchOptionsComponent } from './mat-touch-options/mat-touch-options.component';
+import { Component, Input, HostBinding, Optional, Self, ViewChild, OnInit, AfterViewInit } from '@angular/core';
+import { MatFormFieldControl, MatSelectChange, MatDialog, MatSelect } from '@angular/material';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { NgControl, ControlValueAccessor } from '@angular/forms';
+import { MatTouchOptionsComponent, TouchOptions } from './mat-touch-options/mat-touch-options.component';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 // export interface MatTouchOption {
 //   display: string;
@@ -12,11 +13,12 @@ import { MatTouchOptionsComponent } from './mat-touch-options/mat-touch-options.
 @Component({
   selector: 'mat-touch-select',
   templateUrl: 'mat-touch-select.component.html',
-  styles: [],
+  styles: [`.pane { display: none; }`],
   providers: [{ provide: MatFormFieldControl, useExisting: MatTouchSelectComponent }]
 })
-export class MatTouchSelectComponent implements MatFormFieldControl<string> {
+export class MatTouchSelectComponent implements MatFormFieldControl<string>, AfterViewInit, ControlValueAccessor {
 
+  @ViewChild('select', { static: false }) select: MatSelect;
   @Input() options: string[];
 
   // Mat Form Feild Interface
@@ -70,29 +72,85 @@ export class MatTouchSelectComponent implements MatFormFieldControl<string> {
     this.describedBy = ids.join(' ');
   }
 
-  onContainerClick(event: MouseEvent): void {
-    // throw new Error("Method not implemented.");
-    // console.log('Container Clicked');
-    this.showTouchOptions();
-  }
-
   @Input() touchUi = false;
+  selectChangeSubscription: Subscription;
+  isPanelOpen = false;
+
+
+  registerOnChange = (_: any) => { };
+  registerOnTouched = (_: any) => { };
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    public overlayContainer: OverlayContainer
+  ) {
+    this.ngControl.valueAccessor = this;
+  }
+
+  writeValue(val: string): void {
+    this.value = val;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  ngAfterViewInit() {
+    if (this.ngControl) {
+      console.log('The Control', this.ngControl.control);
+      this.select.ngControl = this.ngControl;
+    }
+  }
+
+  onContainerClick(_: MouseEvent): void {
+    if (this.touchUi) {
+      this.overlayContainer.getContainerElement().style.display = 'none';
+      this.select.close();
+
+      if (!this.selectChangeSubscription) {
+        this.selectChangeSubscription = this.select.openedChange
+          .subscribe((isSelectOpened: boolean) => {
+            if (!this.disabled && !isSelectOpened && !this.isPanelOpen) {
+              this.isPanelOpen = true;
+              this.overlayContainer.getContainerElement().style.display = 'unset';
+              this.showTouchOptions();
+            }
+          });
+      }
+    } else {
+      if (this.selectChangeSubscription) {
+        this.selectChangeSubscription.unsubscribe();
+        this.selectChangeSubscription = null;
+      }
+    }
+  }
 
   setMatVal(val: MatSelectChange) {
     this.value = val.value;
+    if (this.ngControl) {
+      this.ngControl.control.setValue(this.value);
+    }
   }
 
   showTouchOptions(): void {
-    const dialogRef = this.dialog.open(MatTouchOptionsComponent);
+    const dialogRef = this.dialog.open(MatTouchOptionsComponent, {
+      autoFocus: false,
+      data: {
+        label: this.placeholder,
+        options: this.options,
+        selected: this.value
+      } as TouchOptions
+    });
 
     dialogRef.afterClosed()
       .subscribe(result => {
-        console.log('Option Chosen', result);
+        this.isPanelOpen = false;
+        this.select.disabled = false;
+        this.value = result || this.value;
+        if (this.ngControl) {
+          this.ngControl.control.setValue(this.value);
+        }
       });
   }
 

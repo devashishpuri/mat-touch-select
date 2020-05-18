@@ -1,15 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatRadioChange } from '@angular/material';
+
+export interface TouchOptions {
+  label: string;
+  options: string[];
+  selected?: string;
+}
 
 @Component({
   selector: 'lib-mat-touch-options',
   templateUrl: './mat-touch-options.component.html',
-  styleUrls: ['./mat-touch-options.component.css']
+  styleUrls: ['./mat-touch-options.component.scss']
 })
-export class MatTouchOptionsComponent implements OnInit {
+export class MatTouchOptionsComponent {
 
-  constructor() { }
+  constructor(public dialogRef: MatDialogRef<MatTouchOptionsComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: TouchOptions) { }
 
-  ngOnInit() {
+  valSelect(change: MatRadioChange) {
+    this.dialogRef.close(change.value);
   }
 
 }
