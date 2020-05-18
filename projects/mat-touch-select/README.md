@@ -1,24 +1,14 @@
 # MatTouchSelect
+Material Select with TouchUI for Mobile Devices like DatePicker.
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.1.3.
+## Usage
+```html
+<mat-touch-select [options]='options' [formControl]='control' [touchUi]='touchToggle' placeholder="App timer">
+</mat-touch-select>
+```
 
-## Code scaffolding
+## Pending
 
-Run `ng generate component component-name --project mat-touch-select` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project mat-touch-select`.
-> Note: Don't forget to add `--project mat-touch-select` or else it will be added to the default project in your `angular.json` file. 
+Error State Matcher
 
-## Build
-
-Run `ng build mat-touch-select` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Publishing
-
-After building your library with `ng build mat-touch-select`, go to the dist folder `cd dist/mat-touch-select` and run `npm publish`.
-
-## Running unit tests
-
-Run `ng test mat-touch-select` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Code Cleaning
