@@ -1,5 +1,5 @@
-<mat-select #select [placeholder]='placeholder' (selectionChange)='setMatVal($event)'
-    [value]='value'>
+<mat-select #select [placeholder]='placeholder' (openedChange)='openChanged($event)' (selectionChange)='setMatVal($event)'
+    [value]='value' [errorStateMatcher]='errorStateMatcher' [disabled]='disabled'>
     <mat-option *ngFor="let option of options" [value]="option">
         {{ option }}
     </mat-option>

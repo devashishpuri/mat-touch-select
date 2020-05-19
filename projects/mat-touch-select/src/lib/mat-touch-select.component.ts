@@ -1,7 +1,7 @@
 import { Component, Input, HostBinding, Optional, Self, ViewChild, OnInit, AfterViewInit } from '@angular/core';
-import { MatFormFieldControl, MatSelectChange, MatDialog, MatSelect } from '@angular/material';
+import { MatFormFieldControl, MatSelectChange, MatDialog, MatSelect, ErrorStateMatcher } from '@angular/material';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { NgControl, ControlValueAccessor } from '@angular/forms';
+import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
 import { MatTouchOptionsComponent, TouchOptions } from './mat-touch-options/mat-touch-options.component';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
@@ -13,15 +13,23 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 @Component({
   selector: 'mat-touch-select',
   templateUrl: 'mat-touch-select.component.html',
-  styles: [`.pane { display: none; }`],
+  styles: [],
   providers: [{ provide: MatFormFieldControl, useExisting: MatTouchSelectComponent }]
 })
 export class MatTouchSelectComponent implements MatFormFieldControl<string>, AfterViewInit, ControlValueAccessor {
 
   @ViewChild('select', { static: false }) select: MatSelect;
   @Input() options: string[];
+  @Input() errorStateMatcher: ErrorStateMatcher;
 
-  // Mat Form Feild Interface
+  @Input() touchUi = false;
+  selectChangeSubscription: Subscription;
+  isPanelOpen = false;
+
+  // ###############################################
+  // #########| NG FORM CONTROL INTERFACE |#########
+  // ###############################################
+
   stateChanges: Subject<void> = new Subject();
   @HostBinding() id: string;
   @Input() placeholder: string;
@@ -49,11 +57,20 @@ export class MatTouchSelectComponent implements MatFormFieldControl<string>, Aft
 
   @Input() disabled: boolean;
 
-  @Input() get errorState() {
-    return this.ngControl && this.ngControl.errors !== null && this.ngControl.invalid && this.ngControl.dirty;
+  get errorState() {
+    if (this.errorStateMatcher) {
+      return this.errorStateMatcher.isErrorState(
+        this.ngControl.control as FormControl,
+        null
+      );
+    } else {
+      return this.ngControl && this.ngControl.errors !== null &&
+        this.ngControl.invalid &&
+        (this.ngControl.dirty || this.ngControl.touched);
+    }
   }
 
-  controlType = 'mat-touch-select';
+  controlType = 'mat-select';
 
   autofilled?: boolean;
 
@@ -72,13 +89,19 @@ export class MatTouchSelectComponent implements MatFormFieldControl<string>, Aft
     this.describedBy = ids.join(' ');
   }
 
-  @Input() touchUi = false;
-  selectChangeSubscription: Subscription;
-  isPanelOpen = false;
-
-
   registerOnChange = (_: any) => { };
   registerOnTouched = (_: any) => { };
+  writeValue(val: string): void {
+    this.value = val;
+  }
+
+  setDisabledState?(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  // ###############################################
+  // ##########| COMPONENT IMPLEMENTATION |#########
+  // ###############################################
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
@@ -90,22 +113,25 @@ export class MatTouchSelectComponent implements MatFormFieldControl<string>, Aft
     }
   }
 
-  writeValue(val: string): void {
-    this.value = val;
-  }
-
-  setDisabledState?(isDisabled: boolean): void {
-    this.disabled = isDisabled;
-  }
-
   ngAfterViewInit() {
     if (this.ngControl) {
-      console.log('The Control', this.ngControl.control);
       this.select.ngControl = this.ngControl;
     }
   }
 
-  onContainerClick(_: MouseEvent): void {
+  onContainerClick(event: MouseEvent): void {
+    // If not toggled, toggle
+    if ((event.target as HTMLElement).classList.contains('mat-form-field-infix') ||
+      (event.target as HTMLElement).classList.contains('mat-form-field-flex')) {
+      if (this.touchUi) {
+        this.isPanelOpen = true;
+        this.showTouchOptions();
+      } else {
+        this.select.open();
+      }
+      return;
+    }
+
     if (this.touchUi) {
       this.overlayContainer.getContainerElement().style.display = 'none';
       this.select.close();
@@ -132,6 +158,7 @@ export class MatTouchSelectComponent implements MatFormFieldControl<string>, Aft
     this.value = val.value;
     if (this.ngControl) {
       this.ngControl.control.setValue(this.value);
+      this.ngControl.control.markAsTouched();
     }
   }
 
@@ -152,8 +179,16 @@ export class MatTouchSelectComponent implements MatFormFieldControl<string>, Aft
         this.value = result || this.value;
         if (this.ngControl) {
           this.ngControl.control.setValue(this.value);
+          this.ngControl.control.markAsTouched();
         }
       });
+  }
+
+  openChanged(opened: boolean) {
+    if (!opened && !this.touchUi) {
+      this.ngControl.control.markAsTouched();
+      this.ngControl.control.setValue(null);
+    }
   }
 
 }
