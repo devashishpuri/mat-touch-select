@@ -350,7 +350,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
         value: function openChanged(opened) {
           if (!opened && !this.touchUi) {
             this.ngControl.control.markAsTouched();
-            this.ngControl.control.setValue(null);
           }
         }
       }, {

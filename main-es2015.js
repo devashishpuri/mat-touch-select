@@ -279,7 +279,6 @@ class MatTouchSelectComponent {
     openChanged(opened) {
         if (!opened && !this.touchUi) {
             this.ngControl.control.markAsTouched();
-            this.ngControl.control.setValue(null);
         }
     }
 }
