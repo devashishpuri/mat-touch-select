@@ -13,7 +13,7 @@ npm i mat-touch-select --save
     <!-- Our Touch Optimised Form Control -->
     <mat-touch-select [options]='options' [formControl]='control' [touchUi]='touchToggle' [errorStateMatcher]="matcher">
     </mat-touch-select>
-    <mat-error>
+    <mat-error *ngIf='control.hasError("required")'>
         App Timer is <strong>required</strong>
     </mat-error>
 </mat-form-field>

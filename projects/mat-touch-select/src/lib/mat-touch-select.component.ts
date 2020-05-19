@@ -187,7 +187,6 @@ export class MatTouchSelectComponent implements MatFormFieldControl<string>, Aft
   openChanged(opened: boolean) {
     if (!opened && !this.touchUi) {
       this.ngControl.control.markAsTouched();
-      this.ngControl.control.setValue(null);
     }
   }
 
